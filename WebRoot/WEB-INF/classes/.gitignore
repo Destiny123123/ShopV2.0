@@ -1,2 +1,5 @@
-/action/
 /domain/
+/dao/
+/service/
+/action/
+/struts/

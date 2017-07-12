@@ -40,9 +40,8 @@
 body {
 	background-image: url(${pageContext.request.contextPath}/jpg/2.jpg);
 	background-color: #000000;
-}
-
-;
+	}
+	;
 .bg {
 	background-color: white;
 	height: 400px;
@@ -50,8 +49,61 @@ body {
 	border-top-right-radius: 5px;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-}
-;
+	}
+    span{
+    color:red;
+    font-weight:bold
+    }
+    .name{
+    font-weight:bold
+    }
+    
+    #img1{width:300px; height:300px;}
+    #userpic{width:40px; height:40px;}
+    #sp1{width:87px; height:87px; position: absolute; left:141; top:56; background: rgba(62, 55, 58, 0.4)
+    }
+    #img2{width:1800px; height:1800px; position: absolute;}
+    .move{
+    width:500px; 
+    height:500px; 
+    position: absolute; 
+    left:510px; 
+    top:0px; 
+    overflow: hidden; 
+    display: none;
+    z-index:999
+    }
+    
+    .content{
+    color:black;
+    font-weight:normal
+    }
+    .Uname{
+    color:black;
+    font-weight:bold
+    }
+    .star-vote{
+    width:120px;
+    height:20px;
+    position:relative;
+    overflow:hidden;
+    }
+    .star-vote>span{
+    position:absolute;
+    width:120px;
+    height:20px;
+    background-size:cover;
+    background-repeat:no-repeat;
+    left:0px;
+    top:0px;
+    }
+    .star-vote>.add-star{
+    background-image:url("${pageContext.request.contextPath}/jpg/star.png");
+    }
+    .star-vote>.del-star{
+    background-image:url("${pageContext.request.contextPath}/jpg/star-trans.png");
+    background-color:white;
+    }
 </style>
 <script type="text/javascript">
 
@@ -77,9 +129,57 @@ body {
 				}
 			}
 		}
-
-
 	}
+	
+	function getRTime() {
+		var EndTime = new Date("${session.item.expireTime}"); //截止时间 
+		var NowTime = new Date();
+		var t = EndTime.getTime() - NowTime.getTime();
+		var d = Math.floor(t / 1000 / 60 / 60 / 24);
+     	var h = Math.floor(t / 1000 / 60 / 60 % 24);
+		var m = Math.floor(t / 1000 / 60 % 60);
+		var s = Math.floor(t / 1000 % 60);	
+		document.getElementById("t_d").innerHTML = d + "天";
+		document.getElementById("t_h").innerHTML = h + "时";
+		document.getElementById("t_m").innerHTML = m + "分";
+		document.getElementById("t_s").innerHTML = s + "秒";
+	}
+	setInterval(getRTime, 1000);
+	
+	window.onload=function(){
+      var img1 = document.getElementById('img1');
+      var img2 = document.getElementById('img2');
+      var sp = document.getElementById('sp1');
+      var oBox = document.getElementById('box');
+      sp.onmouseover=function(){
+        oBox.style.display='block';
+      };
+      sp.onmouseout=function(){
+        oBox.style.display='none';
+      };
+      document.onmousemove=function(ev){
+        var x = (ev.clientX || event.clientX)-270-sp.offsetWidth/2;
+        var y = (ev.clientY || event.clientY)-155-sp.offsetHeight/2;
+        if((ev.clientX || event.clientX)-270<sp.offsetWidth/2){
+          x = 0;
+        }
+        if((ev.clientX || event.clientX)-270>img1.offsetWidth-sp.offsetWidth/2){
+          x = img1.offsetWidth-sp.offsetWidth;
+        }
+        if((ev.clientY || event.clientY)-155<sp.offsetHeight/2){
+          y = 0;
+        }if((ev.clientY || event.clientY)-155>img1.offsetHeight-sp.offsetHeight/2){
+          y = img1.offsetHeight-sp.offsetHeight;
+        }
+        if((ev.clientX || event.clientX)<1000 && (ev.clientY || event.clientY)<1000) {
+          sp.style.left = (x+143) + 'px';
+          sp.style.top = (y+54) + 'px';
+          img2.style.left = -x * (img2.offsetWidth / img1.offsetWidth) + 'px';
+          img2.style.top = -y * (img2.offsetHeight / img1.offsetHeight) + 'px';
+        }
+      }
+    }
+    
 </script>
 </head>
 
@@ -182,8 +282,9 @@ body {
 				</nav>
 			</div>
 		</div>
-		<div class="row clearfix"
-			style="background-color: white;padding-top:30px;border-top-left-radius: 15px;border-top-right-radius: 15px;">
+		
+		
+		<div class="row clearfix" style="background-color: white;padding-top:30px;border-top-left-radius: 15px;border-top-right-radius: 15px;">
 			<div class="col-md-6 column">
 				<ul class="breadcrumb">
 					<li class="active"><s:property value="#session.item.getType()" />
@@ -192,78 +293,125 @@ body {
 				</ul>
 				<p style="text-align:center;">
 					<img alt="140x140"
-						src="${pageContext.request.contextPath}/jpg/<s:property value="#session.item.getCommPicUrl()"/>"
-						style="width:370px;height:200px;" />
+						 src="${pageContext.request.contextPath}/jpg/<s:property value="#session.item.getCommPicUrl()"/>" 
+						 id="img1"/>
+				    <span id="sp1"></span>
+					<div id="box" class="move">
+					   <img src="${pageContext.request.contextPath}/jpg/<s:property value="#session.item.getCommPicUrl()"/>" 
+					   alt="" id="img2">
+					</div>
 				</p>
 			</div>
+			
 			<div class="col-md-6 column">
-				<br />
-				<h2>
+				<br/>
+				<h2 class="name">
 					<s:property value="#session.item.getCommName()" />
 				</h2>
-				<input id="commodityPrice" type="hidden" name="commodityPrice"
-					value='<s:property value="#session.item.getCommPrice()"/>'>
-				<br />
+				<input id="commodityPrice" type="hidden" name="commodityPrice" value='<s:property value="#session.item.getCommPrice()"/>'>
+				<br/>
 				<h3>
-					数量：
-					<s:property value="#session.item.getCommNumber()" />
+					数量：<s:property value="#session.item.getCommNumber()" />
 				</h3>
-				<br />
+				<br/>
 				<h4>
-					竞猜截止时间：
-					<s:property value="#session.item.getExpireTime()" />
-				</h4>
-				<br />
-
+					商家：<s:property value="#session.item.id.shop.id.user.getUsername()" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </h4>
+				
+				<div id="starcon" class="star-vote">	
+                   <span id="addstar" class="add-star"></span>
+                   <span id="delstar" class="del-star"></span>
+                </div>
 				<h3>
 					<div id="CountMsg" class="HotDate">
-						剩余时间： <span id="t_d">00天</span> <span id="t_h">00时</span> <span
-							id="t_m">00分</span> <span id="t_s">00秒</span>
+						剩余时间:
+					    <span id="t_d">00天</span> 
+						<span id="t_h">00时</span> 
+						<span id="t_m">00分</span> 
+						<span id="t_s">00秒</span>
 					</div>
 				</h3>
-
-				<script type="text/javascript">
-					function getRTime() {
-						var EndTime = new Date("${session.item.expireTime}"); //截止时间 
-						var NowTime = new Date();
-						var t = EndTime.getTime() - NowTime.getTime();
-						var d = Math.floor(t / 1000 / 60 / 60 / 24);
-						var h = Math.floor(t / 1000 / 60 / 60 % 24);
-						var m = Math.floor(t / 1000 / 60 % 60);
-						var s = Math.floor(t / 1000 % 60);
-						document.getElementById("t_d").innerHTML = d + "天";
-						document.getElementById("t_h").innerHTML = h + "时";
-						document.getElementById("t_m").innerHTML = m + "分";
-						document.getElementById("t_s").innerHTML = s + "秒";
-					}
-					setInterval(getRTime, 1000);
-				</script>
-
-				<br /> <a id="modal-951502" href="#modal-container-951502"
-					role="button" class="btn btn-default" data-toggle="modal">立即开抢</a>
+				<br/>
+				<h5>
+					竞猜截止时间：<s:property value="#session.item.getExpireTime()" />
+				</h5>
+				<br/>
+				<a id="modal-951502" href="#modal-container-951502" role="button" 
+				   class="btn btn-default" data-toggle="modal">立即开抢</a>
 			</div>
 		</div>
+		
+		
 		<div class="row clearfix" style="background-color: white; ">
 			<div class="col-md-12 column">
 				<div class="tabbable" id="tabs-33659">
 					<ul class="nav nav-tabs">
-						<li class="active"><a href="#panel-910560" data-toggle="tab">
-								商品详情</a></li>
+						<li class="active">
+						   <a href="#panel-910560" data-toggle="tab">商品详情</a>
+						</li>
+						<li>
+						   <a href="#panel-496130" data-toggle="tab">商家评论(<s:property value="#session.csize"/>)</a>
+					    </li>
 					</ul>
 					<div class="tab-content">
+					
 						<div class="tab-pane active" id="panel-910560">
 							<dl class="dl-horizontal">
-								<br />
+								<br/>
 								<dd>
 									<s:property value="#session.item.getCommDescription()" />
 								</dd>
 							</dl>
 						</div>
+						
+						<div class="tab-pane" id="panel-496130">
+					       <s:iterator value="#session.clist" id ="comment">
+					          <dl>
+			                  <br/>
+				                 <dt>
+				                    <span>
+					                   <img  alt="10x10" src="${pageContext.request.contextPath}/jpg/<s:property value="id.user.picUrl"/>"                  
+					                id="userpic"/></span>&nbsp;&nbsp;&nbsp;&nbsp;
+					                <span class="content"><s:property value="content"/></span> 
+					                &nbsp;&nbsp;&nbsp;&nbsp;					                
+					                                                评分：<span><s:property value="commentType"/></span>/5    
+					                
+					                <div id="starcon" class="star-vote">
+                                       <span id="addstar" class="add-star"></span>
+                                       <span id="" class="del-star" style="left:<s:property value="commentType"/>px" ></span>
+                                    </div>                      
+				                 </dt>
+			                  </dl>
+			                  <dl>
+			           	         <dt>					      
+					                <span class ="Uname"><s:property value="id.user.username"/></span>
+				                 </dt>
+			                  </dl>
+			                  <HR style="border:1 dashed #987cb9" width="100%" color=#987cb9 SIZE=1>
+			               </s:iterator>
+					    </div>
 					</div>
+					
 				</div>
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+	window.onload=showStar("${session.item.id.shop.id.user.getCreditLevel()}");        
+            //n表示后台获取的星数
+    function showStar(n){
+        var conwid=document.getElementById("starcon").offsetWidth;
+        var delstar=document.getElementById("delstar");
+        console.log(conwid);
+                
+                //透明星星移动的像素
+        var delmove=(2*n*conwid)/10;
+            //del_star.style.backgroundPosition=-del_move+"px 0px";
+        delstar.style.left=delmove+"px";
+    }
+    function getValue(){
+    return 24;
+    }
+	</script>
 </body>
 </html>
-
+	

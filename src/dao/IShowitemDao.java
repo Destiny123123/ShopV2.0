@@ -12,5 +12,4 @@ import domain.Commodity;
 
 public interface IShowitemDao {
 	public Commodity findCommodityById(String id);
-
 }
